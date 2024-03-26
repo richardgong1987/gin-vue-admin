@@ -58,7 +58,6 @@ func JWTAuth() gin.HandlerFunc {
 		//	c.Abort()
 		//}
 		c.Set("claims", claims)
-		c.Next()
 		if claims.ExpiresAt.Unix()-time.Now().Unix() < claims.BufferTime {
 			dr, _ := utils.ParseDuration(global.GVA_CONFIG.JWT.ExpiresTime)
 			claims.ExpiresAt = jwt.NewNumericDate(time.Now().Add(dr))
@@ -78,5 +77,6 @@ func JWTAuth() gin.HandlerFunc {
 				_ = jwtService.SetRedisJWT(newToken, newClaims.Username)
 			}
 		}
+		c.Next()
 	}
 }
